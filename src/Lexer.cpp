@@ -126,6 +126,7 @@ size_t Lexer::get_word() {
 
 
 size_t Lexer::get_string() {
+    // TODO: strings with internal backslashed quotes.
     regex re(R"S(^"[^"]*")S");
     smatch match;
     const string substr = src.substr(pos);
