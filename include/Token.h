@@ -6,8 +6,8 @@ enum class TokenType {
     Identifier,         // [a-zA-Z_][a-zA-Z0-9_]*
     Integer,            // [0-9]+
     Float,              // [0-9]+\.[0-9]*
-    String,             // ".*"
-    Character,          // '.'
+    String,             // ".*[^\]"
+    Character,          // '([\].)|([^\])'
     Semicolon,          // ;
     Lt,                 // <
     LE,                 // <=
@@ -15,9 +15,10 @@ enum class TokenType {
     GE,                 // >=
     Eq,                 // ==
     Plus,               // +
-    Minux,              // -
+    Minus,              // -
     Mul,                // *
     Div,                // /
+    Power,              // **
     Assign,             // =
     LBracket,           // (
     RBracket,           // )
