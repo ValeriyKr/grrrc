@@ -25,7 +25,8 @@ enum class TokenType {
     LBrace,             // {
     RBrace,             // }
     LSBrace,            // [
-    RSBrace             // ]
+    RSBrace,            // ]
+    Eof                 // \a
 };
 
 

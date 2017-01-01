@@ -1,4 +1,5 @@
 #include <locale>
+#include <regex>
 
 #include "Lexer.h"
 
@@ -6,7 +7,7 @@ using namespace std;
 
 Lexer::Lexer(const string &source) :
     pos {0},
-    src {source}
+    src {source + '\a'}
 {
 }
 
@@ -26,6 +27,8 @@ unique_ptr<Token> Lexer::next() {
     if (pos >= src.length()) return nullptr;
 
     switch (src[pos]) {
+    case '\a':
+        return make_token(TokenType::Eof, 1);
     case ';':
         return make_token(TokenType::Semicolon, 1);
     case '-':
@@ -92,26 +95,13 @@ unique_ptr<Token> Lexer::make_token(TokenType type, size_t size) {
 
 
 size_t Lexer::get_float() {
-    if (!isdigit(src[pos])) return 0;
-    bool found_dot = false;
-    size_t cpos = pos;
-    for (; cpos < src.length(); ++cpos) {
-        char c = src[cpos];
-        if (!isdigit(c)) {
-            if ('.' == c) {
-                if (!found_dot) {
-                    found_dot = true;
-                    continue;
-                }
-                return 0;
-            } else if ((c == ';' || isspace(c)) && found_dot) {
-                return cpos - pos;
-            } else {
-                return 0;
-            }
-        }
-    }
-    return found_dot ? cpos - pos : 0;
+    regex re("^[0-9]+\\.[0-9]*[^0-9]");
+    smatch match;
+    const string substr = src.substr(pos);
+    if (regex_search(substr, match, re) && match.size())
+        return match.str(0).length()-1;
+    else
+        return 0;
 }
 
 
@@ -124,35 +114,35 @@ size_t Lexer::get_integer() {
 
 
 size_t Lexer::get_word() {
-    if (!isalpha(src[pos]) || src[pos] != '_') return 0;
-    size_t cpos = pos;
-    for (; cpos < src.length(); ++cpos)
-        if (!(isalnum(src[cpos]) || src[cpos] == '_'))
-            return cpos - pos;
-    return cpos - pos;
+    regex re("^[a-zA-Z_][a-zA-Z0-9_]*[^a-zA-Z0-9_]");
+    smatch match;
+    const string substr = src.substr(pos);
+    if (regex_search(substr, match, re) && match.size())
+        return match.str(0).length()-1;
+    else
+        return 0;
 }
 
 
 
 size_t Lexer::get_string() {
-    if (src[pos] != '"') return 0;
-    size_t cpos = pos + 1;
-    for (; cpos < src.length()
-            && src[cpos] != '"' && src[cpos-1] != '\\'; ++cpos)
-        ;
-    if (cpos >= src.length() || src[cpos] != '"') return 0;
-    return cpos - pos;
+    regex re(R"S(^"[^"]*")S");
+    smatch match;
+    const string substr = src.substr(pos);
+    if (regex_search(substr, match, re) && match.size())
+        return match.str(0).length();
+    else
+        return 0;
 }
 
 
 size_t Lexer::get_character() {
-    if (src[pos] == '\'') {
-        if (pos+1 < src.length() && src[pos+1] == '\\') {
-            if (pos+3 < src.length() && src[pos+3] == '\'')
-                return 4;
-        } else if (pos+2 < src.length() && src[pos+2] == '\'') {
-            return 3;
-        }
-    }
+    regex re(R"S(^'([^\\]|(\\.))')S");
+    smatch match;
+    const string substr = src.substr(pos);
+    if (regex_search(substr, match, re) && match.size())
+        return match.str(0).length();
+    else
+        return 0;
     return 0;
 }
