@@ -120,7 +120,7 @@ test(8, "main() {\n\
     token(Identifier, 13, 16)
     token(Identifier, 17, 18)
     token(Semicolon, 18, 19)
-    token(Identifier, 24, 25);
+    token(Identifier, 24, 25)
     token(Assign, 25, 26)
     token(Integer, 26, 27)
     token(Semicolon, 27, 28)
@@ -139,7 +139,7 @@ end_test(8)
 
 test(9, "int main() {\n\
     float x = 0.3;\n\
-    float y = 5.;\n\
+    float y = 5.0;\n\
     float z=123.13;\n\
     print(i2s(y ==z));\n\
 }")
@@ -156,25 +156,25 @@ test(9, "int main() {\n\
     token(Identifier, 36, 41)
     token(Identifier, 42, 43)
     token(Assign, 44, 45)
-    token(Float, 46, 48)
-    token(Semicolon, 48, 49)
-    token(Identifier, 54, 59)
-    token(Identifier, 60, 61)
-    token(Assign, 61, 62)
-    token(Float, 62, 68)
-    token(Semicolon, 68, 69)
-    token(Identifier, 74, 79)
-    token(LBracket, 79, 80)
-    token(Identifier, 80, 83)
-    token(LBracket, 83, 84)
-    token(Identifier, 84, 85)
-    token(Eq, 86, 88)
-    token(Identifier, 88, 89)
-    token(RBracket, 89, 90)
+    token(Float, 46, 49)
+    token(Semicolon, 49, 50)
+    token(Identifier, 55, 60)
+    token(Identifier, 61, 62)
+    token(Assign, 62, 63)
+    token(Float, 63, 69)
+    token(Semicolon, 69, 70)
+    token(Identifier, 75, 80)
+    token(LBracket, 80, 81)
+    token(Identifier, 81, 84)
+    token(LBracket, 84, 85)
+    token(Identifier, 85, 86)
+    token(Eq, 87, 89)
+    token(Identifier, 89, 90)
     token(RBracket, 90, 91)
-    token(Semicolon, 91, 92)
-    token(RBrace, 93, 94)
-    token(Eof, 94, 95)
+    token(RBracket, 91, 92)
+    token(Semicolon, 92, 93)
+    token(RBrace, 94, 95)
+    token(Eof, 95, 96)
 end_test(9)
 
 
@@ -229,6 +229,41 @@ test(13, R"("a"[0]='\\')")
 end_test(13)
 
 
+test(14, "ifdef")
+    token(Identifier, 0, 5)
+    token(Eof, 5, 6)
+end_test(14)
+
+
+test(15, "if(a){for (x in 1..10){whilewhile; while(1) {}}}")
+    token(If, 0, 2)
+    token(LBracket, 2, 3)
+    token(Identifier, 3, 4)
+    token(RBracket, 4, 5)
+    token(LBrace, 5, 6)
+    token(For, 6, 9)
+    token(LBracket, 10, 11)
+    token(Identifier, 11, 12)
+    token(In, 13, 15)
+    token(Integer, 16, 17)
+    token(Range, 17, 19)
+    token(Integer, 19, 21)
+    token(RBracket, 21, 22)
+    token(LBrace, 22, 23);
+    token(Identifier, 23, 33)
+    token(Semicolon, 33, 34)
+    token(While, 35, 40)
+    token(LBracket, 40, 41)
+    token(Integer, 41, 42)
+    token(RBracket, 42, 43)
+    token(LBrace, 44, 45)
+    token(RBrace, 45, 46)
+    token(RBrace, 46, 47)
+    token(RBrace, 47, 48)
+    token(Eof, 48, 49)
+end_test(15)
+
+
 int main() {
     test1();
     test2();
@@ -243,6 +278,8 @@ int main() {
     test11();
     test12();
     test13();
+    test14();
+    test15();
 
     cerr << endl
          << "Tests count:   " << tests_count << endl;

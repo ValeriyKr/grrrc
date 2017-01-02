@@ -5,7 +5,7 @@ enum class TokenType {
 /*      TYPE            ||      MATCHES WITH     */
     Identifier,         // [a-zA-Z_][a-zA-Z0-9_]*
     Integer,            // [0-9]+
-    Float,              // [0-9]+\.[0-9]*
+    Float,              // [0-9]+\.[0-9]+
     String,             // ".*[^\]"
     Character,          // '([\].)|([^\])'
     Semicolon,          // ;
@@ -26,6 +26,11 @@ enum class TokenType {
     RBrace,             // }
     LSBrace,            // [
     RSBrace,            // ]
+    Range,              // ..
+    In,                 // in
+    If,                 // if
+    For,                // for
+    While,              // while
     Eof                 // \a
 };
 

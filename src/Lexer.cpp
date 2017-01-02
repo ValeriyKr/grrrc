@@ -66,6 +66,25 @@ unique_ptr<Token> Lexer::next() {
             make_token(TokenType::Power, 2) :
             make_token(TokenType::Mul, 1);
     default:
+        // ..
+        if (pos+1 < src.length() && src.substr(pos, 2) == "..")
+            return make_token(TokenType::Range, 2);
+        // in / if
+        if (src[pos] == 'i' && pos + 2 < src.length() && !isalnum(src[pos+2]))
+            switch (src[pos+1]) {
+            case 'n':
+                return make_token(TokenType::In, 2);
+            case 'f':
+                return make_token(TokenType::If, 2);
+            }
+        // for
+        if (pos + 3 < src.length() && !isalnum(src[pos+3])
+                && src.substr(pos, 3) == "for")
+            return make_token(TokenType::For, 3);
+        // while
+        if (pos + 5 < src.length() && !isalnum(src[pos+5])
+                && src.substr(pos, 5) == "while")
+            return make_token(TokenType::While, 5);
         size_t len = get_float();
         if (len > 1)
             return make_token(TokenType::Float, len);
@@ -95,7 +114,7 @@ unique_ptr<Token> Lexer::make_token(TokenType type, size_t size) {
 
 
 size_t Lexer::get_float() {
-    regex re("^[0-9]+\\.[0-9]*[^0-9]");
+    regex re("^[0-9]+\\.[0-9]+[^0-9]");
     smatch match;
     const string substr = src.substr(pos);
     if (regex_search(substr, match, re) && match.size())
